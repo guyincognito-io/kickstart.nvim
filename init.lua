@@ -158,6 +158,20 @@ vim.o.inccommand = 'split'
 -- Show which line your cursor is on
 vim.o.cursorline = true
 
+-- Automatically reload files changed outside of Neovim
+vim.o.autoread = true
+local autoread_group = vim.api.nvim_create_augroup('kickstart_autoread', { clear = true })
+vim.api.nvim_create_autocmd({ 'FocusGained', 'TermClose', 'TermLeave', 'CursorHold', 'CursorHoldI' }, {
+  group = autoread_group,
+  command = 'checktime',
+})
+vim.api.nvim_create_autocmd('FileChangedShellPost', {
+  group = autoread_group,
+  callback = function()
+    vim.notify('File reloaded because it changed on disk', vim.log.levels.INFO)
+  end,
+})
+
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.o.scrolloff = 10
 
